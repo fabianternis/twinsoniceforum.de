@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = 'Admin Dashboard – Twins on Ice Forum';
 require __DIR__ . '/layout/header.php';
 ?>
@@ -7,7 +9,9 @@ require __DIR__ . '/layout/header.php';
     
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
         <div>
-            <h1 style="font-size: 2.2rem; color: #fff; font-weight: 800;">⚙️ Admin Control Panel</h1>
+            <h1 style="font-size: 2rem; color: #fff; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                <?= Icon::render('shield') ?> Admin Control Panel
+            </h1>
             <p style="color: var(--text-muted);">Verwalte Kategorien, Benutzer & Forum Einstellungen</p>
         </div>
         <span class="badge badge-amber" style="font-size: 0.9rem; padding: 0.4rem 1rem;">Administrator</span>
@@ -20,12 +24,12 @@ require __DIR__ . '/layout/header.php';
             <div style="color: var(--text-muted); font-size: 0.9rem;">Registrierte Mitglieder</div>
         </div>
         <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-magenta);"><?= $topicsCount ?></div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #38bdf8;"><?= $topicsCount ?></div>
             <div style="color: var(--text-muted); font-size: 0.9rem;">Forum Themen</div>
         </div>
         <div class="glass-card" style="padding: 1.5rem; text-align: center;">
-            <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-purple);"><?= $postsCount ?></div>
-            <div style="color: var(--text-muted); font-size: 0.9rem;">Beiträge & Antworten</div>
+            <div style="font-size: 2.5rem; font-weight: 800; color: #94a3b8;"><?= $postsCount ?></div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">Beitraege & Antworten</div>
         </div>
     </div>
 
@@ -34,7 +38,9 @@ require __DIR__ . '/layout/header.php';
         
         <!-- Add Category Form -->
         <div class="glass-card" style="padding: 2rem;">
-            <h2 style="font-size: 1.3rem; color: #fff; margin-bottom: 1.25rem;">➕ Neue Kategorie erstellen</h2>
+            <h2 style="font-size: 1.3rem; color: #fff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <?= Icon::render('plus') ?> Neue Kategorie erstellen
+            </h2>
             
             <form action="/admin/category/create" method="POST">
                 <div style="margin-bottom: 1rem;">
@@ -48,16 +54,22 @@ require __DIR__ . '/layout/header.php';
                 </div>
 
                 <div style="margin-bottom: 1rem;">
-                    <label style="display: block; color: var(--text-main); font-size: 0.85rem; margin-bottom: 0.3rem;">Icon Emoji</label>
-                    <input type="text" name="icon" class="input-field" value="🎨" required>
+                    <label style="display: block; color: var(--text-main); font-size: 0.85rem; margin-bottom: 0.3rem;">Icon Key</label>
+                    <select name="icon" class="input-field">
+                        <option value="skate">Skate (Ice)</option>
+                        <option value="music">Music</option>
+                        <option value="video">Video</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="calendar">Calendar</option>
+                        <option value="chat">Chat</option>
+                    </select>
                 </div>
 
                 <div style="margin-bottom: 1rem;">
                     <label style="display: block; color: var(--text-main); font-size: 0.85rem; margin-bottom: 0.3rem;">Badge Farbe</label>
                     <select name="badge_color" class="input-field">
                         <option value="cyan">Cyan</option>
-                        <option value="magenta">Magenta</option>
-                        <option value="purple">Purple</option>
+                        <option value="blue">Blue</option>
                         <option value="amber">Amber</option>
                     </select>
                 </div>
@@ -73,11 +85,13 @@ require __DIR__ . '/layout/header.php';
 
         <!-- Registered Users List -->
         <div class="glass-card" style="padding: 2rem;">
-            <h2 style="font-size: 1.3rem; color: #fff; margin-bottom: 1.25rem;">👥 Neueste Mitglieder</h2>
+            <h2 style="font-size: 1.3rem; color: #fff; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <?= Icon::render('user') ?> Neueste Mitglieder
+            </h2>
             
             <div style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 400px; overflow-y: auto;">
                 <?php foreach ($recentUsers as $u): ?>
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.8rem; background: #0f172a; border-radius: var(--radius-sm);">
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <img src="<?= htmlspecialchars($u['avatar_url']) ?>" class="avatar-sm" style="width: 32px; height: 32px;">
                             <div>

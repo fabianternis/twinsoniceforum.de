@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = htmlspecialchars($profileUser['username']) . ' – Benutzerprofil';
 require __DIR__ . '/layout/header.php';
 $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
@@ -9,13 +11,13 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
     <!-- User Header Card -->
     <div class="glass-card" style="padding: 2.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 1.75rem;">
-            <img src="<?= htmlspecialchars($profileUser['avatar_url']) ?>" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-cyan); box-shadow: 0 0 20px rgba(56,189,248,0.3);">
+            <img src="<?= htmlspecialchars($profileUser['avatar_url']) ?>" alt="Avatar" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-cyan);">
             <div>
                 <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
                     <h1 style="font-size: 2.2rem; color: #fff; font-weight: 800;"><?= htmlspecialchars($profileUser['username']) ?></h1>
                     <span class="badge badge-cyan"><?= htmlspecialchars($profileUser['rank_badge']) ?></span>
                     <?php if ($profileUser['role'] === 'admin'): ?>
-                        <span class="badge badge-amber">Admin 👑</span>
+                        <span class="badge badge-amber">Admin</span>
                     <?php endif; ?>
                 </div>
 
@@ -24,9 +26,9 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
                 </p>
 
                 <div style="display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-dim);">
-                    <span>📅 Mitglied seit <?= date('M Y', strtotime($profileUser['created_at'])) ?></span>
-                    <span>💬 <?= $postCount ?> Antworten verfasst</span>
-                    <span>📌 <?= count($userTopics) ?> Themen gestartet</span>
+                    <span>Mitglied seit <?= date('M Y', strtotime($profileUser['created_at'])) ?></span>
+                    <span><?= $postCount ?> Antworten verfasst</span>
+                    <span><?= count($userTopics) ?> Themen gestartet</span>
                 </div>
             </div>
         </div>
@@ -34,14 +36,16 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
         <?php if ($isOwnProfile): ?>
             <div>
                 <button onclick="document.getElementById('editProfileModal').style.display='flex'" class="btn btn-secondary">
-                    ✏️ Profil bearbeiten
+                    <?= Icon::render('edit') ?> Profil bearbeiten
                 </button>
             </div>
         <?php endif; ?>
     </div>
 
     <!-- User Topics List -->
-    <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 1rem;">📌 Erstellte Themen von <?= htmlspecialchars($profileUser['username']) ?></h2>
+    <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+        <?= Icon::render('pin') ?> Erstellte Themen von <?= htmlspecialchars($profileUser['username']) ?>
+    </h2>
 
     <div class="glass-card" style="overflow: hidden;">
         <?php if (empty($userTopics)): ?>
@@ -57,7 +61,7 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
                                 <h4><?= htmlspecialchars($topic['title']) ?></h4>
                             </a>
                             <div class="topic-meta-tags">
-                                <span class="badge badge-<?= $topic['badge_color'] ?>"><?= $topic['category_icon'] ?> <?= htmlspecialchars($topic['category_name']) ?></span>
+                                <span class="badge badge-<?= $topic['badge_color'] ?>"><?= Icon::render($topic['category_icon']) ?> <?= htmlspecialchars($topic['category_name']) ?></span>
                                 <span>• Erstellt am <?= date('d.m.Y H:i', strtotime($topic['created_at'])) ?></span>
                             </div>
                         </div>
@@ -80,8 +84,12 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal-box" style="max-width: 500px;">
             <div class="modal-header">
-                <h3 style="color: #fff;">✏️ Profil bearbeiten</h3>
-                <button onclick="document.getElementById('editProfileModal').style.display='none'" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+                <h3 style="color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+                    <?= Icon::render('edit') ?> Profil bearbeiten
+                </h3>
+                <button onclick="document.getElementById('editProfileModal').style.display='none'" style="background: none; border: none; color: #fff; cursor: pointer;">
+                    <?= Icon::render('close') ?>
+                </button>
             </div>
             <div style="padding: 1.5rem;">
                 <form action="/user/update" method="POST">
@@ -101,7 +109,7 @@ $isOwnProfile = ($currentUser && $currentUser['id'] == $profileUser['id']);
                         <textarea name="bio" class="input-field" rows="3"><?= htmlspecialchars($profileUser['bio']) ?></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Änderungen speichern</button>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Aenderungen speichern</button>
                 </form>
             </div>
         </div>

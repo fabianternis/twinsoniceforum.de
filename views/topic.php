@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = htmlspecialchars($topic['title']) . ' – Twins on Ice Forum';
 require __DIR__ . '/layout/header.php';
 ?>
@@ -18,26 +20,26 @@ require __DIR__ . '/layout/header.php';
     <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
         
         <!-- Header info -->
-        <div style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="border-bottom: 1px solid #1e293b; padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
             <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
                 <span class="badge badge-<?= $topic['badge_color'] ?>">
-                    <?= $topic['category_icon'] ?> <?= htmlspecialchars($topic['category_name']) ?>
+                    <?= Icon::render($topic['category_icon']) ?> <?= htmlspecialchars($topic['category_name']) ?>
                 </span>
                 <?php if ($topic['is_pinned']): ?>
-                    <span class="badge badge-pinned">📌 ANGEPINNT</span>
+                    <span class="badge badge-pinned"><?= Icon::render('pin') ?> ANGEPINNT</span>
                 <?php endif; ?>
                 <span style="font-size: 0.85rem; color: var(--text-dim);"><?= date('d.m.Y H:i', strtotime($topic['created_at'])) ?></span>
             </div>
 
-            <h1 style="font-size: 2.2rem; color: #fff; line-height: 1.3; font-weight: 800;"><?= htmlspecialchars($topic['title']) ?></h1>
+            <h1 style="font-size: 2rem; color: #fff; line-height: 1.3; font-weight: 800;"><?= htmlspecialchars($topic['title']) ?></h1>
         </div>
 
         <!-- Author & Content Layout -->
         <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem;">
             
             <!-- Author Card -->
-            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); padding-right: 1.5rem;">
-                <img src="<?= htmlspecialchars($topic['avatar_url']) ?>" class="avatar-sm" style="width: 80px; height: 80px; margin-bottom: 0.75rem; border: 3px solid var(--border-ice);">
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border-right: 1px solid #1e293b; padding-right: 1.5rem;">
+                <img src="<?= htmlspecialchars($topic['avatar_url']) ?>" class="avatar-sm" style="width: 80px; height: 80px; margin-bottom: 0.75rem; border: 2px solid #334155;">
                 <a href="/user/<?= urlencode($topic['username']) ?>" style="font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 0.25rem;">
                     <?= htmlspecialchars($topic['username']) ?>
                 </a>
@@ -58,10 +60,10 @@ require __DIR__ . '/layout/header.php';
 
                 <!-- Poll Widget (if available) -->
                 <?php if (isset($poll) && $poll): ?>
-                    <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-glow); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
-                        <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span>📊 Umfrage:</span>
-                            <span><?= htmlspecialchars($poll['question']) ?></span>
+                    <div style="background: #0f172a; border: 1px solid #334155; padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.1rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <?= Icon::render('poll') ?>
+                            <span>Umfrage: <?= htmlspecialchars($poll['question']) ?></span>
                         </h3>
 
                         <form action="/topic/<?= $topic['id'] ?>/vote-poll" method="POST">
@@ -72,7 +74,7 @@ require __DIR__ . '/layout/header.php';
                                     <?php 
                                         $pct = $poll['total_votes'] > 0 ? round(($opt['votes'] / $poll['total_votes']) * 100) : 0;
                                     ?>
-                                    <label style="display: flex; flex-direction: column; gap: 0.3rem; cursor: pointer; background: rgba(255,255,255,0.03); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.08);">
+                                    <label style="display: flex; flex-direction: column; gap: 0.3rem; cursor: pointer; background: #151e32; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid #1e293b;">
                                         <div style="display: flex; align-items: center; justify-content: space-between;">
                                             <div style="display: flex; align-items: center; gap: 0.6rem; color: #fff;">
                                                 <input type="radio" name="option_id" value="<?= $opt['id'] ?>" required>
@@ -82,8 +84,8 @@ require __DIR__ . '/layout/header.php';
                                         </div>
                                         
                                         <!-- Progress bar -->
-                                        <div style="height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; margin-top: 4px;">
-                                            <div style="height: 100%; width: <?= $pct ?>%; background: linear-gradient(90deg, var(--primary-cyan), var(--accent-magenta)); border-radius: 99px; transition: width 0.5s ease;"></div>
+                                        <div style="height: 6px; width: 100%; background: #334155; border-radius: 99px; overflow: hidden; margin-top: 4px;">
+                                            <div style="height: 100%; width: <?= $pct ?>%; background: #0284c7; border-radius: 99px;"></div>
                                         </div>
                                     </label>
                                 <?php endforeach; ?>
@@ -96,17 +98,17 @@ require __DIR__ . '/layout/header.php';
                 <?php endif; ?>
 
                 <!-- Reactions Bar -->
-                <div style="display: flex; align-items: center; gap: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; border-top: 1px solid #1e293b; padding-top: 1rem;">
                     <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Reaktionen:</span>
                     
                     <button onclick="toggleReaction(<?= $topic['id'] ?>, 'heart')" class="btn btn-secondary" style="padding: 0.35rem 0.8rem; font-size: 0.85rem;">
-                        ❤️ Herz
+                        <?= Icon::render('heart') ?> Gefällt mir
                     </button>
                     <button onclick="toggleReaction(<?= $topic['id'] ?>, 'skate')" class="btn btn-secondary" style="padding: 0.35rem 0.8rem; font-size: 0.85rem;">
-                        ⛸️ Ice
+                        <?= Icon::render('skate') ?> Ice
                     </button>
                     <button onclick="toggleReaction(<?= $topic['id'] ?>, 'fire')" class="btn btn-secondary" style="padding: 0.35rem 0.8rem; font-size: 0.85rem;">
-                        🔥 Feuer
+                        <?= Icon::render('fire') ?> Feuer
                     </button>
                 </div>
 
@@ -117,16 +119,18 @@ require __DIR__ . '/layout/header.php';
 
     <!-- Replies Header -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.5rem; color: #fff;">💬 Antworten (<?= count($posts) ?>)</h2>
+        <h2 style="font-size: 1.4rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+            <?= Icon::render('chat') ?> Antworten (<?= count($posts) ?>)
+        </h2>
     </div>
 
     <!-- Posts / Replies List -->
-    <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem;">
+    <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 3rem;">
         <?php foreach ($posts as $post): ?>
             <div class="glass-card" style="padding: 1.5rem;">
                 <div style="display: grid; grid-template-columns: 160px 1fr; gap: 1.5rem;">
                     
-                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); padding-right: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; border-right: 1px solid #1e293b; padding-right: 1rem;">
                         <img src="<?= htmlspecialchars($post['avatar_url']) ?>" class="avatar-sm" style="width: 50px; height: 50px; margin-bottom: 0.5rem;">
                         <a href="/user/<?= urlencode($post['username']) ?>" style="font-weight: 700; color: #fff; font-size: 0.95rem;">
                             <?= htmlspecialchars($post['username']) ?>
@@ -150,7 +154,9 @@ require __DIR__ . '/layout/header.php';
 
     <!-- Reply Form -->
     <div class="glass-card" style="padding: 2rem;">
-        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 1rem;">✍️ Antwort auf dieses Thema verfassen</h3>
+        <h3 style="font-size: 1.2rem; color: #fff; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <?= Icon::render('edit') ?> Antwort auf dieses Thema verfassen
+        </h3>
 
         <?php if (isset($user) && $user): ?>
             <form action="/topic/<?= $topic['id'] ?>/reply" method="POST">
@@ -160,7 +166,7 @@ require __DIR__ . '/layout/header.php';
                 <button type="submit" class="btn btn-primary">Antwort absenden</button>
             </form>
         <?php else: ?>
-            <div style="text-align: center; padding: 2rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-md);">
+            <div style="text-align: center; padding: 2rem; background: #0f172a; border-radius: var(--radius-md);">
                 <p style="color: var(--text-muted); margin-bottom: 1rem;">Du musst angemeldet sein, um auf dieses Thema zu antworten.</p>
                 <a href="/login" class="btn btn-primary">Jetzt Anmelden</a>
                 <a href="/register" class="btn btn-secondary" style="margin-left: 0.5rem;">Registrieren</a>

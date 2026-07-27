@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = htmlspecialchars($category['name']) . ' – Twins on Ice Forum';
 require __DIR__ . '/layout/header.php';
 ?>
@@ -7,8 +9,8 @@ require __DIR__ . '/layout/header.php';
     <!-- Category Header Card -->
     <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
         <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <div style="font-size: 3rem; background: rgba(255,255,255,0.05); width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1);">
-                <?= $category['icon'] ?>
+            <div style="background: #1e293b; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); border: 1px solid #334155; color: var(--primary-cyan);">
+                <?= Icon::render($category['icon']) ?>
             </div>
             <div>
                 <span class="badge badge-<?= $category['badge_color'] ?>" style="margin-bottom: 0.5rem; font-size: 0.85rem;">Kategorie</span>
@@ -18,7 +20,7 @@ require __DIR__ . '/layout/header.php';
         </div>
 
         <div>
-            <a href="/topic/create?category=<?= $category['id'] ?>" class="btn btn-primary">+ Thema in dieser Kategorie</a>
+            <a href="/topic/create?category=<?= $category['id'] ?>" class="btn btn-primary"><?= Icon::render('plus') ?> Thema in dieser Kategorie</a>
         </div>
     </div>
 
@@ -26,7 +28,6 @@ require __DIR__ . '/layout/header.php';
     <div class="glass-card" style="overflow: hidden;">
         <?php if (empty($topics)): ?>
             <div style="padding: 4rem 2rem; text-align: center; color: var(--text-muted);">
-                <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">❄️</span>
                 <h3>Noch keine Themen in dieser Kategorie.</h3>
                 <p style="margin-top: 0.5rem;">Starte jetzt die erste Diskussion!</p>
                 <a href="/topic/create?category=<?= $category['id'] ?>" class="btn btn-primary" style="margin-top: 1.5rem;">Erstes Thema erstellen</a>
@@ -40,7 +41,7 @@ require __DIR__ . '/layout/header.php';
                             <a href="/topic/<?= $topic['id'] ?>">
                                 <h4>
                                     <?php if ($topic['is_pinned']): ?>
-                                        <span class="badge badge-pinned">📌 ANGEPINNT</span>
+                                        <span class="badge badge-pinned"><?= Icon::render('pin') ?> ANGEPINNT</span>
                                     <?php endif; ?>
                                     <?= htmlspecialchars($topic['title']) ?>
                                 </h4>

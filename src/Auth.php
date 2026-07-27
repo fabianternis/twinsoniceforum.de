@@ -88,7 +88,7 @@ class Auth
         $avatarUrl = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=250&q=80';
 
         $stmtInsert = $db->prepare("INSERT INTO users (username, email, password_hash, avatar_url, bio, rank_badge, role) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmtInsert->execute([$username, $email, $hash, $avatarUrl, $bio, 'New Ice Fan ⛸️', 'member']);
+        $stmtInsert->execute([$username, $email, $hash, $avatarUrl, $bio, 'Ice Fan', 'member']);
 
         $userId = $db->lastInsertId();
         $_SESSION['user_id'] = $userId;

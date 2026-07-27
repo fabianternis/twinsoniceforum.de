@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = 'Anmelden – Twins on Ice Forum';
 require __DIR__ . '/layout/header.php';
 ?>
@@ -7,14 +9,14 @@ require __DIR__ . '/layout/header.php';
     
     <div class="glass-card" style="padding: 2.5rem;">
         <div style="text-align: center; margin-bottom: 2rem;">
-            <div class="brand-icon" style="margin: 0 auto 1rem; width: 56px; height: 56px; font-size: 2rem;">⛸️</div>
-            <h1 style="font-size: 1.8rem; color: #fff; font-weight: 800;">Willkommen zurück!</h1>
+            <div class="brand-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;"><?= Icon::render('skate') ?></div>
+            <h1 style="font-size: 1.8rem; color: #fff; font-weight: 800;">Willkommen zurueck!</h1>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Melde dich im Twins on Ice Forum an</p>
         </div>
 
         <?php if (isset($error) && $error): ?>
             <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 0.8rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.88rem; text-align: center;">
-                ⚠️ <?= htmlspecialchars($error) ?>
+                <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
 

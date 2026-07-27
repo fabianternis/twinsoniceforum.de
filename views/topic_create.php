@@ -1,4 +1,6 @@
 <?php
+use App\Icon;
+
 $pageTitle = 'Neues Thema erstellen – Twins on Ice Forum';
 require __DIR__ . '/layout/header.php';
 ?>
@@ -6,14 +8,16 @@ require __DIR__ . '/layout/header.php';
 <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem; max-width: 850px;">
     
     <div class="glass-card" style="padding: 2.5rem;">
-        <h1 style="font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem; font-weight: 800;">🔥 Neues Thema erstellen</h1>
+        <h1 style="font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <?= Icon::render('plus') ?> Neues Thema erstellen
+        </h1>
         <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">
             Teile deine Gedanken, Fragen zu Eiskunstlauf, Feedback zur Single "CHECK DAS" oder erstelle einen neuen Thread in der Community.
         </p>
 
         <?php if (isset($error) && $error): ?>
             <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 0.85rem 1.2rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                ⚠️ <?= htmlspecialchars($error) ?>
+                <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
 
@@ -21,13 +25,13 @@ require __DIR__ . '/layout/header.php';
             
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">
-                    Kategorie auswählen *
+                    Kategorie auswaehlen *
                 </label>
                 <select name="category_id" class="input-field" required style="cursor: pointer;">
-                    <option value="">-- Bitte Kategorie wählen --</option>
+                    <option value="">-- Bitte Kategorie waehlen --</option>
                     <?php foreach ($categories as $cat): ?>
                         <option value="<?= $cat['id'] ?>" <?= (isset($_GET['category']) && $_GET['category'] == $cat['id']) ? 'selected' : '' ?>>
-                            <?= $cat['icon'] ?> <?= htmlspecialchars($cat['name']) ?>
+                            <?= htmlspecialchars($cat['name']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -37,7 +41,7 @@ require __DIR__ . '/layout/header.php';
                 <label style="display: block; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">
                     Titel des Themas *
                 </label>
-                <input type="text" name="title" class="input-field" placeholder="Aussagekräftiger Titel..." required max="200">
+                <input type="text" name="title" class="input-field" placeholder="Aussagekraeftiger Titel..." required max="200">
             </div>
 
             <div style="margin-bottom: 2rem;">
@@ -48,7 +52,7 @@ require __DIR__ . '/layout/header.php';
             </div>
 
             <div style="display: flex; gap: 1rem; align-items: center;">
-                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">Thema veröffentlichen</button>
+                <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">Thema veroeffentlichen</button>
                 <a href="/" class="btn btn-secondary">Abbrechen</a>
             </div>
 

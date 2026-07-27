@@ -6,9 +6,15 @@ use PDO;
 
 class DatabaseInitializer
 {
-    public static function run(): void
+    public static function run(bool $forceReset = false): void
     {
         $db = Database::getConnection();
+
+        if ($forceReset) {
+            $db->exec("SET FOREIGN_KEY_CHECKS = 0;");
+            $db->exec("DROP TABLE IF EXISTS shouts, poll_votes, poll_options, polls, reactions, posts, topics, categories, users;");
+            $db->exec("SET FOREIGN_KEY_CHECKS = 1;");
+        }
 
         // Check if users table exists
         $tableExists = false;
@@ -19,7 +25,7 @@ class DatabaseInitializer
             $tableExists = false;
         }
 
-        if ($tableExists) {
+        if ($tableExists && !$forceReset) {
             return;
         }
 
@@ -32,7 +38,7 @@ class DatabaseInitializer
                 password_hash VARCHAR(255) NOT NULL,
                 avatar_url VARCHAR(255) DEFAULT '/assets/images/default-avatar.png',
                 bio TEXT,
-                rank_badge VARCHAR(50) DEFAULT 'Ice Cadet ⛸️',
+                rank_badge VARCHAR(50) DEFAULT 'Ice Cadet',
                 role VARCHAR(20) DEFAULT 'member',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -45,7 +51,7 @@ class DatabaseInitializer
                 name VARCHAR(100) NOT NULL,
                 slug VARCHAR(100) NOT NULL UNIQUE,
                 description TEXT,
-                icon VARCHAR(50) DEFAULT '⛸️',
+                icon VARCHAR(50) DEFAULT 'skate',
                 badge_color VARCHAR(30) DEFAULT 'cyan',
                 display_order INT DEFAULT 0
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -159,8 +165,8 @@ class DatabaseInitializer
             'admin@twinsoniceforum.de',
             $passwordHash,
             'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-            'Official Community Administrator for Twins on Ice Forum. Ice Skating & Music Enthusiast!',
-            'Ice Queen 👑 VIP',
+            'Official Community Administrator for Twins on Ice Forum.',
+            'Ice Queen VIP',
             'admin'
         ]);
         $adminId = $db->lastInsertId();
@@ -172,7 +178,7 @@ class DatabaseInitializer
             $passwordHash,
             'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=250&q=80',
             'Skating daily since 2021. Big fan of Emilia & Letizia!',
-            'Gold Skater ⛸️',
+            'Gold Skater',
             'member'
         ]);
         $user1Id = $db->lastInsertId();
@@ -183,8 +189,8 @@ class DatabaseInitializer
             'letizia.squad@example.com',
             $passwordHash,
             'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=250&q=80',
-            'CHECK DAS is on repeat 24/7 🔥. Passionate about figure skating choreography.',
-            'Music Fanatic 🎵',
+            'CHECK DAS is on repeat 24/7. Passionate about figure skating choreography.',
+            'Music Fanatic',
             'member'
         ]);
         $user2Id = $db->lastInsertId();
@@ -196,18 +202,18 @@ class DatabaseInitializer
             $passwordHash,
             'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=250&q=80',
             'Learning double axels! Inspired by Twins on Ice vlogs.',
-            'Spin Specialist 🌀',
+            'Spin Specialist',
             'member'
         ]);
         $user3Id = $db->lastInsertId();
 
-        // Seed Categories
+        // Seed Categories using SVG icon names
         $categories = [
             [
                 'name' => 'Eiskunstlauf & Training',
                 'slug' => 'eiskunstlauf-training',
-                'description' => 'Diskusssionen über Kür-Choreografien, Sprünge, Pirouetten & Schlittschuh-Equipment der Twins on Ice.',
-                'icon' => '⛸️',
+                'description' => 'Diskussionen über Kuer-Choreografien, Spruenge, Pirouetten & Schlittschuh-Equipment der Twins on Ice.',
+                'icon' => 'skate',
                 'badge_color' => 'cyan',
                 'display_order' => 1
             ],
@@ -215,31 +221,31 @@ class DatabaseInitializer
                 'name' => 'Musik & "CHECK DAS"',
                 'slug' => 'musik-check-das',
                 'description' => 'Alles rund um die Single "CHECK DAS", Musikvideos, Beats, Lyrics & neue Releases.',
-                'icon' => '🎵',
-                'badge_color' => 'magenta',
+                'icon' => 'music',
+                'badge_color' => 'cyan',
                 'display_order' => 2
             ],
             [
                 'name' => 'Vlogs & Social Media',
                 'slug' => 'vlogs-social-media',
                 'description' => 'Behind the scenes vlogs, TikTok Trends, Instagram Outfits & YouTube Highlights.',
-                'icon' => '📺',
-                'badge_color' => 'purple',
+                'icon' => 'video',
+                'badge_color' => 'blue',
                 'display_order' => 3
             ],
             [
                 'name' => 'Fashion & Lifestyle',
                 'slug' => 'fashion-lifestyle',
                 'description' => 'Eislauf-Outfits, Style-Guides, Hauls & Makeup-Inspirationen von Emilia & Letizia.',
-                'icon' => '👗',
-                'badge_color' => 'pink',
+                'icon' => 'fashion',
+                'badge_color' => 'blue',
                 'display_order' => 4
             ],
             [
                 'name' => 'Meet & Greets & Events',
                 'slug' => 'events-meet-greets',
-                'description' => 'Termine für Shows, Meisterschaften, Autogrammstunden & Fan-Treffen.',
-                'icon' => '🎟️',
+                'description' => 'Termine fuer Shows, Meisterschaften, Autogrammstunden & Fan-Treffen.',
+                'icon' => 'calendar',
                 'badge_color' => 'amber',
                 'display_order' => 5
             ],
@@ -247,7 +253,7 @@ class DatabaseInitializer
                 'name' => 'Fan Lounge & Off-Topic',
                 'slug' => 'fan-lounge-off-topic',
                 'description' => 'Stelle dich der Community vor, teile Fan-Art oder quatsche im Off-Topic Bereich.',
-                'icon' => '💬',
+                'icon' => 'chat',
                 'badge_color' => 'blue',
                 'display_order' => 6
             ],
@@ -267,9 +273,9 @@ class DatabaseInitializer
         $stmtTopic->execute([
             $catIds['musik-check-das'],
             $adminId,
-            '🔥 Offizieller Diskussions-Thread: Single "CHECK DAS" & Musikvideo!',
+            'Offizieller Diskussions-Thread: Single "CHECK DAS" & Musikvideo',
             'offizieller-diskussions-thread-check-das',
-            "Willkommen im offiziellen Community-Thread zum Release von **\"CHECK DAS\"** von Twins on Ice (Emilia & Letizia Macula)!\n\nWie gefällt euch der Track und die Choreo im Video? Welche Szene auf dem Eis hat euch am meisten umgehauen?\n\nLasst uns hier eure Gedanken, Lieblings-Lines und Feedback austauschen! 🎶❄️",
+            "Willkommen im offiziellen Community-Thread zum Release von **\"CHECK DAS\"** von Twins on Ice (Emilia & Letizia Macula)!\n\nWie gefaellt euch der Track und die Choreo im Video? Welche Szene auf dem Eis hat euch am meisten umgehauen?\n\nLasst uns hier eure Gedanken, Lieblings-Lines und Feedback austauschen!",
             1,
             342,
             3
@@ -280,9 +286,9 @@ class DatabaseInitializer
         $stmtTopic->execute([
             $catIds['eiskunstlauf-training'],
             $adminId,
-            '⛸️ Eiskunstlauf Guide: Die perfekten Schlittschuhe & Pflege-Tipps',
+            'Eiskunstlauf Guide: Die perfekten Schlittschuhe & Pflege-Tipps',
             'eiskunstlauf-guide-schlittschuhe-pflege',
-            "Hallo liebe Twins on Ice Fans!\n\nDa viele in der Community selbst mit dem Eiskunstlaufen angefangen haben oder es ausprobieren möchten, sammeln wir hier die besten Tipps rund um Equipment, Schliff und Pflege der Kufen.\n\nWorauf achtet ihr beim Kauf eurer Schlittschuhe?",
+            "Hallo liebe Twins on Ice Fans!\n\nDa viele in der Community selbst mit dem Eiskunstlaufen angefangen haben oder es ausprobieren moechten, sammeln wir hier die besten Tipps rund um Equipment, Schliff und Pflege der Kufen.\n\nWorauf achtet ihr beim Kauf eurer Schlittschuhe?",
             1,
             218,
             2
@@ -295,7 +301,7 @@ class DatabaseInitializer
             $user1Id,
             'Lieblings-Vlog 2026: Welches Video hat euch am besten gefallen?',
             'lieblings-vlog-2026',
-            "Hey Leute! Der neue YouTube Vlog von den Mädels war einfach nur genial! Besonders der Behind-The-Scenes Einblick in die Meisterschaftsvorbereitung.\n\nWas war euer bisheriger Lieblingsvlog von Emilia & Letizia?",
+            "Hey Leute! Der neue YouTube Vlog von den Maedels war einfach nur genial! Besonders der Behind-The-Scenes Einblick in die Meisterschaftsvorbereitung.\n\nWas war euer bisheriger Lieblingsvlog von Emilia & Letizia?",
             0,
             129,
             1
@@ -308,25 +314,25 @@ class DatabaseInitializer
         $stmtPost->execute([
             $topic1Id,
             $user2Id,
-            "Der Beat bei 0:45 Drop ist absolut brutal! 💥 Und die Synchro-Pirouette auf dem Eis passt einfach perfekt zum Rhythmus. Hab mir den Song direkt in die Playlist gepackt!"
+            "Der Beat bei 0:45 Drop ist absolut stark! Und die Synchro-Pirouette auf dem Eis passt einfach perfekt zum Rhythmus. Hab mir den Song direkt in die Playlist gepackt!"
         ]);
 
         $stmtPost->execute([
             $topic1Id,
             $user3Id,
-            "Ich liebe das Outfit mit den blauen Ice-Glitter Elementen! Hoffentlich kommt dazu bald ein Fashion-Breakdown Vlog. 💙"
+            "Ich liebe das Outfit mit den blauen Ice-Glitter Elementen! Hoffentlich kommt dazu bald ein Fashion-Breakdown Vlog."
         ]);
 
         $stmtPost->execute([
             $topic1Id,
             $adminId,
-            "Danke für das Feedback Leute! Vergesst nicht, oben in der Umfrage abzustimmen!"
+            "Danke fuer das Feedback Leute! Vergesst nicht, oben in der Umfrage abzustimmen!"
         ]);
 
         $stmtPost->execute([
             $topic2Id,
             $user3Id,
-            "Toller Thread! Ich benutze aktuell Edea Schlittschuhe mit Wilson Kufen und kann sie jedem Anfänger bis Fortgeschrittenen nur empfehlen."
+            "Toller Thread! Ich benutze aktuell Edea Schlittschuhe mit Wilson Kufen und kann sie jedem Anfaenger bis Fortgeschrittenen nur empfehlen."
         ]);
 
         // Seed Poll
@@ -335,20 +341,20 @@ class DatabaseInitializer
         $pollId = $db->lastInsertId();
 
         $stmtOpt = $db->prepare("INSERT INTO poll_options (poll_id, option_text, votes) VALUES (?, ?, ?)");
-        $stmtOpt->execute([$pollId, "Die Synchro-Choreografie auf dem Eis ⛸️", 45]);
+        $stmtOpt->execute([$pollId, "Die Synchro-Choreografie auf dem Eis", 45]);
         $opt1Id = $db->lastInsertId();
-        $stmtOpt->execute([$pollId, "Der Beat & Songwriting 🎶", 32]);
+        $stmtOpt->execute([$pollId, "Der Beat & Songwriting", 32]);
         $opt2Id = $db->lastInsertId();
-        $stmtOpt->execute([$pollId, "Die High-Fashion Schlittschuh-Outfits 👗", 19]);
+        $stmtOpt->execute([$pollId, "Die High-Fashion Schlittschuh-Outfits", 19]);
         $opt3Id = $db->lastInsertId();
-        $stmtOpt->execute([$pollId, "Das Behind-the-Scenes Feeling 📹", 14]);
+        $stmtOpt->execute([$pollId, "Das Behind-the-Scenes Feeling", 14]);
 
         // Seed Shouts
         $stmtShout = $db->prepare("INSERT INTO shouts (user_id, message) VALUES (?, ?)");
-        $stmtShout->execute([$adminId, "Willkommen im neuen Twins on Ice Forum! ❄️✨ Viel Spaß beim Austauschen!"]);
-        $stmtShout->execute([$user1Id, "Heyy an alle Eiskunstlauf Fans! Wer schaut auch täglich die Vlogs?"]);
-        $stmtShout->execute([$user2Id, "CHECK DAS läuft im Loop! 🎧"]);
-        $stmtShout->execute([$user3Id, "Morgen wieder Eistraining, bin mega motiviert 💪"]);
+        $stmtShout->execute([$adminId, "Willkommen im neuen Twins on Ice Forum! Viel Spass beim Austauschen!"]);
+        $stmtShout->execute([$user1Id, "Hallo an alle Eiskunstlauf Fans! Wer schaut auch taeglich die Vlogs?"]);
+        $stmtShout->execute([$user2Id, "CHECK DAS laeuft im Loop!"]);
+        $stmtShout->execute([$user3Id, "Morgen wieder Eistraining, bin mega motiviert"]);
 
         // Seed Reactions
         $stmtReact = $db->prepare("INSERT INTO reactions (item_type, item_id, user_id, reaction_type) VALUES (?, ?, ?, ?)");
