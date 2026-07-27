@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Rules\TurnstileRule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -23,9 +24,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
+            'cf-turnstile-response' => ['nullable', new TurnstileRule()],
         ]);
 
-        // Support login by username or email
         $field = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         if (Auth::attempt([$field => $credentials['username'], 'password' => $credentials['password']])) {
@@ -57,6 +58,7 @@ class AuthController extends Controller
             'email' => 'required|email|max:100|unique:users',
             'password' => 'required|string|min:6',
             'bio' => 'nullable|string',
+            'cf-turnstile-response' => ['nullable', new TurnstileRule()],
         ]);
 
         $user = User::create([
@@ -70,7 +72,6 @@ class AuthController extends Controller
             'role' => 'member',
         ]);
 
-        // Assign Spatie Member Role
         $memberRole = Role::firstOrCreate(['name' => 'member']);
         $user->assignRole($memberRole);
 

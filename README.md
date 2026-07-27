@@ -1,58 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Twins on Ice Community Forum ⛸️✨
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Modern enterprise **Laravel 13** web application & community forum dedicated to **Twins on Ice** (Emilia & Letizia Macula).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🔒 Security & OAuth Integration
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Multi-Provider OAuth Setup (Laravel Socialite)
+This application supports multi-provider OAuth login for **Google**, **GitHub**, **Discord**, **Twitch**, **Twitter/X**, and **Microsoft**.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+To configure OAuth credentials in `.env`:
 
-## Learning Laravel
+#### **Google OAuth**
+1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
+2. Create an **OAuth 2.0 Client ID** (Web application).
+3. Set **Authorized redirect URIs**: `https://twinsoniceforum.dnbx.de/auth/google/callback`
+4. Copy Client ID and Secret to `.env`:
+   ```env
+   GOOGLE_CLIENT_ID=your_client_id
+   GOOGLE_CLIENT_SECRET=your_client_secret
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### **GitHub OAuth**
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers).
+2. Click **New OAuth App**.
+3. Set **Authorization callback URL**: `https://twinsoniceforum.dnbx.de/auth/github/callback`
+4. Copy Client ID and Secret to `.env`:
+   ```env
+   GITHUB_CLIENT_ID=your_client_id
+   GITHUB_CLIENT_SECRET=your_client_secret
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### **Discord OAuth**
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications).
+2. Create an Application & navigate to **OAuth2**.
+3. Add Redirect URI: `https://twinsoniceforum.dnbx.de/auth/discord/callback`
+4. Copy Client ID and Secret to `.env`:
+   ```env
+   DISCORD_CLIENT_ID=your_client_id
+   DISCORD_CLIENT_SECRET=your_client_secret
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+#### **Twitch OAuth**
+1. Go to [Twitch Developer Console](https://dev.twitch.tv/console/apps).
+2. Register an Application with OAuth Redirect: `https://twinsoniceforum.dnbx.de/auth/twitch/callback`
+3. Copy Client ID and Secret to `.env`:
+   ```env
+   TWITCH_CLIENT_ID=your_client_id
+   TWITCH_CLIENT_SECRET=your_client_secret
+   ```
 
-## Agentic Development
+#### **Twitter / X OAuth 2.0**
+1. Go to [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard).
+2. Enable OAuth 2.0 and set Callback URL: `https://twinsoniceforum.dnbx.de/auth/twitter-oauth-2/callback`
+3. Copy Client ID and Secret to `.env`:
+   ```env
+   TWITTER_CLIENT_ID=your_client_id
+   TWITTER_CLIENT_SECRET=your_client_secret
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+#### **Microsoft OAuth**
+1. Go to [Azure Portal](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade).
+2. Register an Application and set Redirect URI: `https://twinsoniceforum.dnbx.de/auth/microsoft/callback`
+3. Copy Client ID and Secret to `.env`:
+   ```env
+   MICROSOFT_CLIENT_ID=your_client_id
+   MICROSOFT_CLIENT_SECRET=your_client_secret
+   ```
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
-```
+### 2. Cloudflare Turnstile CAPTCHA Setup
+Privacy-friendly CAPTCHA protection for login, registration, and form submissions.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+1. Go to [Cloudflare Dashboard &rarr; Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile).
+2. Add your domain (`twinsoniceforum.de` & `twinsoniceforum.dnbx.de`).
+3. Set Site Key & Secret Key in `.env`:
+   ```env
+   TURNSTILE_SITE_KEY=0x4AAAAAA...
+   TURNSTILE_SECRET_KEY=0x4AAAAAA...
+   ```
+*(Note: Testing mode uses default Cloudflare keys `1x00000000000000000000AA` which always pass).*
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Cloudflare R2 (S3-Compatible Storage) Setup
+Cloudflare R2 provides zero-egress object storage for user avatars, topic attachments, and uploaded media.
 
-## Code of Conduct
+1. Go to [Cloudflare Dashboard &rarr; R2](https://dash.cloudflare.com/?to=/:account/r2).
+2. Create a Bucket named `twinsoniceforum-storage`.
+3. Generate an R2 API Token with **Edit** permissions.
+4. Copy Endpoint URL, Access Key ID, and Secret Access Key to `.env`:
+   ```env
+   FILESYSTEM_DISK=r2
+   CLOUDFLARE_R2_ACCESS_KEY_ID=your_access_key_id
+   CLOUDFLARE_R2_SECRET_ACCESS_KEY=your_secret_access_key
+   CLOUDFLARE_R2_BUCKET=twinsoniceforum-storage
+   CLOUDFLARE_R2_ENDPOINT=https://<account_id>.r2.cloudflarestorage.com
+   CLOUDFLARE_R2_PUBLIC_URL=https://pub-<hash>.r2.dev
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📦 Installed Packages
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `laravel/socialite` - Multi-Provider OAuth authentication.
+- `league/flysystem-aws-s3-v3` - Cloudflare R2 S3 storage driver.
+- `spatie/laravel-permission` - Role & Permission management (`admin`, `moderator`, `member`).
+- `spatie/laravel-activitylog` - Audit logging & activity trail inspector (`/admin/audit`).
+- `spatie/laravel-sluggable` - Automatic SEO slug generation.
+- `SoftDeletes` - Soft delete & trash recovery manager (`/admin/trash`).
 
-## License
+## 🌐 Server Deployment
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Live URL**: `https://twinsoniceforum.dnbx.de`
+- **GitHub Repository**: [fabianternis/twinsoniceforum.de](https://github.com/fabianternis/twinsoniceforum.de)

@@ -9,7 +9,7 @@ return [
     |
     | Here you may specify the default filesystem disk that should be used
     | by the framework. The "local" disk, as well as a variety of cloud
-    | based disks are available to your application for file storage.
+    | based disks are available to your application for storage.
     |
     */
 
@@ -24,7 +24,7 @@ return [
     | may even configure multiple disks for the same driver. Examples for
     | most supported storage drivers are configured here for reference.
     |
-    | Supported drivers: "local", "ftp", "sftp", "s3"
+    | Supported drivers: "local", "ftp", "sfxp", "s3"
     |
     */
 
@@ -35,29 +35,43 @@ return [
             'root' => storage_path('app/private'),
             'serve' => true,
             'throw' => false,
-            'report' => false,
         ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
-            'report' => false,
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cloudflare R2 (S3 Compatible Storage) Disk Configuration
+        |--------------------------------------------------------------------------
+        */
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('CLOUDFLARE_R2_ACCESS_KEY_ID'),
+            'secret' => env('CLOUDFLARE_R2_SECRET_ACCESS_KEY'),
+            'region' => 'us-east-1', // R2 requires us-east-1 or auto
+            'bucket' => env('CLOUDFLARE_R2_BUCKET'),
+            'url' => env('CLOUDFLARE_R2_PUBLIC_URL'),
+            'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'throw' => false,
         ],
 
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'report' => false,
         ],
 
     ],

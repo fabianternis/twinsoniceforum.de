@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AdminController;
@@ -21,11 +22,16 @@ Route::post('/topic/{id}/react', [TopicController::class, 'react'])->name('topic
 Route::post('/topic/{id}/vote-poll', [TopicController::class, 'votePoll'])->name('topics.votePoll')->middleware('auth');
 Route::post('/topic/{id}/delete', [TopicController::class, 'destroy'])->name('topics.destroy')->middleware('auth');
 
+// Auth Routes
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'processLogin']);
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
 Route::post('/register', [AuthController::class, 'processRegister']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Multi-Provider OAuth Routes
+Route::get('/auth/{provider}', [SocialAuthController::class, 'redirect'])->name('oauth.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('oauth.callback');
 
 Route::get('/user/{username}', [ProfileController::class, 'show'])->name('user.profile');
 Route::post('/user/update', [ProfileController::class, 'update'])->name('user.update')->middleware('auth');
@@ -33,7 +39,7 @@ Route::post('/user/update', [ProfileController::class, 'update'])->name('user.up
 Route::get('/api/chat', [ChatController::class, 'index']);
 Route::post('/api/chat', [ChatController::class, 'post']);
 
-// Admin Routes with Auth & Spatie Role Check
+// Admin Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
     Route::get('/admin/audit', [AdminController::class, 'auditLogs'])->name('admin.audit');
